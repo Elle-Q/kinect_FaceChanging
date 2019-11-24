@@ -65,7 +65,18 @@ namespace ChangeFace
             }
             kinect.DepthStream.Enable(DepthImageFormat.Resolution640x480Fps30);
             kinect.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
-            kinect.SkeletonStream.Enable();
+            //设置骨骼帧的平滑度(单位米)
+            var parameters = new TransformSmoothParameters
+            {
+                Smoothing = 0.5f,//设置骨骼帧的平滑尺度，范围0~1的浮点，值越大表示平滑度越高，0表示不进行平滑处理
+                Correction = 0.5f,//修正值，范围为0~1的浮点，值越小表示修正越多
+                Prediction = 0.5f,//预测帧尺度，平滑需要预测骨骼帧的数目
+                JitterRadius = 0.05f,//抖动半径，设置修正的半径范围，如果关节点抖动超过该设置的半径阈值，将会被纠正道这个半径之内，浮点类型
+                MaxDeviationRadius = 0.04f//最大偏离半径，与抖动半径结合，共同设置抖动半径的最大边界
+
+             };
+            kinect.SkeletonStream.Enable(parameters);
+            //kinect.SkeletonStream.Enable();
             kinect.AllFramesReady += new EventHandler<AllFramesReadyEventArgs>(Kinect_AllFramesReady);
             try
             {
